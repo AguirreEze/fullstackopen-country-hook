@@ -16,9 +16,19 @@ const useField = (type) => {
 }
 
 const useCountry = (name) => {
-  const [country, setCountry] = useState(null)
+  const [country, setCountry] = useState({
+    found: false,
+    data: {}
+  })
 
-  useEffect(() => {})
+  useEffect(async () => {
+    try {
+      const { data } = await axios.get(`https://restcountries.com/v2/name/${name}?fullText=true`)
+      data.status === 404
+        ? setCountry({ found: false, data: {} })
+        : setCountry({ found: true, data: data[0] })
+    } catch (err) { setCountry({ found: false, data: {} }) }
+  }, [name])
 
   return country
 }
